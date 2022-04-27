@@ -1,0 +1,24 @@
+<div th:fragment="header">
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+                <span class="fs-4">Главная страница</span>
+            </a>
+
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/Home" th:class="${linkActiveHome}"  aria-current="page">Главная страница</a></li>
+                <li class="nav-item"><a href="/IncomingRequest" th:class="${linkActiveIncomingRequest}" >Управление заявками</a></li>
+            </ul>
+        </header>
+    </div>
+</div>
+
+<div th:fragment="header2">
+<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+    <li><a href="/Home" class="nav-link px-2 text-white">Главная страница</a></li>
+    <li><a href="/IncomingRequest" class="nav-link px-2 text-secondary">Управление заявками</a></li>
+</ul>
+</div>

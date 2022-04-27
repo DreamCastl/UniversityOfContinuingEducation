@@ -1,0 +1,16 @@
+2022-04-22 00:00:07.750  INFO --- [nio-8080-exec-6] c.e.s.c.IncomingRequestController        : Переход на IncomingRequest
+2022-04-22 00:01:59.543  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:06:59.572  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:11:59.592  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:16:59.620  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:21:59.635  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:26:59.649  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:31:59.668  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:36:59.681  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 00:41:59.703  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 01:03:51.099  WARN --- [l-1 housekeeper] c.z.h.p.HikariPool                       : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=18m33s647ms629µs200ns).
+2022-04-22 01:05:03.292  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Запуск потока
+2022-04-22 01:07:56.238  INFO --- [nio-8080-exec-9] c.e.s.c.IncomingRequestController        : Остановка алгоритма
+2022-04-22 01:07:56.250  INFO --- [nio-8080-exec-9] c.e.s.s.MailOperationService             : Поток останавливается
+2022-04-22 01:07:56.257  INFO --- [io-8080-exec-10] c.e.s.c.IncomingRequestController        : Переход на IncomingRequest
+2022-04-22 01:10:03.310  INFO --- [Thread-11] c.e.s.s.MailsOperations                  : Поток закончен
