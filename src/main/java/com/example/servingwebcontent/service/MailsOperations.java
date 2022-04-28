@@ -10,6 +10,7 @@ import com.example.servingwebcontent.service.WorkWithDataBase.SheetsAndJava;
 import com.example.servingwebcontent.service.WorkWithEmail.JavaMailReader.EmailReader;
 import com.example.servingwebcontent.service.WorkWithEmail.JavaMailSending.JavaMailSender;
 import com.example.servingwebcontent.service.WorkWithEmail.ParserData;
+import com.example.servingwebcontent.service.WorkWithEmail.WorkWithEmail;
 import com.example.servingwebcontent.service.WorkWithWebSite.NMFO.DriverNMFO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,10 +30,10 @@ public class MailsOperations extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
     private LaunchStatusTrackingRepository TrackingRepository;
+    @Autowired
     private GoogleSheetsProperties googleSheetsProperties;
     private EmailProperties emailProperties;
-    private EmailReader emailReader;
-    private JavaMailSender javaMailSender;
+    private WorkWithEmail workWithEmail;
     @Autowired
     private SheetsAndJava sheetsService;
     private DriverNMFO driverConnect;
@@ -75,21 +76,25 @@ public class MailsOperations extends Thread {
     private void Initialization() {
         logger.info("Инициализация");
         sheetsService = new SheetsAndJava(googleSheetsProperties);
-        emailReader = new EmailReader(emailProperties);
-        javaMailSender = new JavaMailSender(emailProperties);
+        workWithEmail = new WorkWithEmail(
+                new EmailReader(emailProperties,emailProperties.getGetReadInbox())
+                ,new JavaMailSender(emailProperties)
+                ,"Отправленные");
         driverConnect = new DriverNMFO(propertiesNMFO,locators);
     }
 
     private void Operation() {
 
-        Message[] messages = emailReader.ReadMessage(emailProperties.getGetReadInbox());//"письма")
+        Message[] messages = workWithEmail.getEmailReader()
+                .ReadMessage();//"письма")
+
         for (Message Message : messages) {
             logger.info("Начинаем разбирать письмо");
             try {
                 OperationWithMessage(Message);
             } catch (Exception e) {
                 driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc();
-                emailReader.SetFlagSeen(Message, false);
+                workWithEmail.getEmailReader().SetFlagSeen(Message, false);
                 logger.warn("Fucking ERROR " + e.getMessage());
             }
         }
@@ -107,17 +112,17 @@ public class MailsOperations extends Thread {
         driverConnect.getDataNMFO(currentLine);
         if (currentLine.get("ApplicationCanceled").equals("true")) {
             logger.warn("Не нашел контент по заявке " + currentLine.get("Number"));
-            emailReader.SetFlagSeen(message, false);
-            logger.info("------------> END <------------");
+        } else {
+            //7. Подтверждаем заявку на НМФО
+            driverConnect.getSpoAndVoPage().setConfirmationCheckBox();//todo напомнить Насте на чекед знанчения контейнера чтобы дважды не подтверждать
+            driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
+            //8. Отправляем письмо на почту.
+            workWithEmail.sendMessage(currentLine);
         }
-        //7. Подтверждаем заявку на НМФО
-  //      driverConnect.getSpoAndVoPage().setConfirmationCheckBox();//todo напомнить Насте на чекед знанчения контейнера чтобы дважды не подтверждать
-        driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
-        //8. Отправляем письмо на почту.
-        javaMailSender.sendMessageWithAttachment(currentLine);
         // 9. Записываем строку в google Sheet
         sheetsService.AppendRow("Заявки", RowData.getInfoForGoogleSheet(currentLine));
-        emailReader.SetFlagSeen(message, true);
+        workWithEmail.getEmailReader().
+                SetFlagSeen(message, true);
         logger.info("------------> END <------------");
     }
 
@@ -126,7 +131,8 @@ public class MailsOperations extends Thread {
         сurrentLine.put("Data", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(new Date()));
         String Content = null;
         try {
-            Content = emailReader.GetContentMail(message);
+            Content = workWithEmail.getEmailReader()
+                    .GetContentMail(message);
             ParserData ParserData = new ParserData();//TODO Передалать в компоненту ?
             сurrentLine.put("Number", ParserData.NumberApplicationFromContext(Content));
             сurrentLine.put("With", ParserData.getWithDate(Content));
@@ -139,7 +145,8 @@ public class MailsOperations extends Thread {
             сurrentLine.put("Error", "true");
             logger.warn("Не удалось получить контент из письма");
         } finally {
-            emailReader.SetFlagSeen(message, false);
+            workWithEmail.getEmailReader()
+                    .SetFlagSeen(message, false);
         }
         сurrentLine.put("Payer", "");
         сurrentLine.put("Email", "");

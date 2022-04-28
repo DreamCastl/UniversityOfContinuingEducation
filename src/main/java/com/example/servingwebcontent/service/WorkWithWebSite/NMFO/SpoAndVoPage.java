@@ -64,6 +64,7 @@ public class SpoAndVoPage {
         WebDriverWait wait = new WebDriverWait(driver, 20);
         try {
             logger.info("search " + numberApplicationClient);
+            Thread.sleep(2000);
             wait.until(visibilityOfElementLocated(By.xpath(numberRequestField))).sendKeys(numberApplicationClient); //Номер заявки
             Thread.sleep(2000);
             wait.until(visibilityOfElementLocated(By.xpath(searchBtn))).click(); //Поиск

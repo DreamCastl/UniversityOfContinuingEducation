@@ -16,6 +16,7 @@ import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -29,11 +30,9 @@ import java.util.List;
 public class SheetsAndJava {
     private static Sheets sheetsService;
     private static String APPLICATION_NAME = "Google Sheets Example";
+    @Autowired
     private GoogleSheetsProperties GoogleSheetsProperties;
     private static final Logger logger = LogManager.getLogger();
-
-    @Value("${google.sheets.properties.id_table}")
-    private String id_table;
 
     public SheetsAndJava(GoogleSheetsProperties Properties) {
         GoogleSheetsProperties = Properties;
@@ -84,7 +83,7 @@ public class SheetsAndJava {
         try {
             logger.info("Adding в Google Sheets");
             AppendValuesResponse appendResult = sheetsService.spreadsheets().values()
-                    .append(id_table,NameTable,appendBody)
+                    .append(GoogleSheetsProperties.getID_Table(),NameTable,appendBody)
                     .setValueInputOption("USER_ENTERED")
                     .setInsertDataOption("INSERT_ROWS")
                     .setIncludeValuesInResponse(true)

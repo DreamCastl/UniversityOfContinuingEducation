@@ -12,7 +12,11 @@ public class RowData {
 
     public static boolean AddClientData(List<String> clientInfo, Map<String, String> currentLine){
 
-        currentLine.put("ApplicationCanceled", "false"); // TODO Отмененные заявки
+        if (clientInfo.size() == 0) {
+            currentLine.put("ApplicationCanceled", "true");
+            return false;
+        }
+        currentLine.put("ApplicationCanceled", "false");
 
         currentLine.put("FullName", clientInfo.get(1));
         currentLine.put("SNILS", clientInfo.get(2));
@@ -54,6 +58,12 @@ public class RowData {
         rez.add(currentLine.get("CourseName"));
         rez.add(currentLine.get("With"));
         rez.add(currentLine.get("On"));
+        rez.add(currentLine.get("Number"));
+        if (currentLine.get("ApplicationCanceled").equals("true"))
+        {
+            rez.add(currentLine.get("Заявка отменена"));
+            return rez;
+        }
         rez.add(currentLine.get("FullName"));
         rez.add(currentLine.get("SNILS"));
         rez.add(currentLine.get("BirtDay"));

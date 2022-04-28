@@ -8,6 +8,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import javax.mail.Folder;
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
@@ -33,7 +35,7 @@ public class JavaMailSender {
 
     }
 
-    public boolean sendMessageWithAttachment(Map<String, String> PropertiesSend) {
+    public boolean sendMessageWithAttachment(Map<String, String> PropertiesSend, Folder sendInbox) {
 
         MimeMessage message = emailSender.createMimeMessage();
 
@@ -42,6 +44,7 @@ public class JavaMailSender {
             helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
         } catch (MessagingException e) {
             e.printStackTrace();
+            return false;
         }
 
         try {
@@ -56,7 +59,9 @@ public class JavaMailSender {
             helper.addAttachment(PropertiesSend.get("pathToAttachment"), file);
 
         //    emailSender.send(message);
-
+            Message[] massMessage = new Message[1];
+            massMessage[0] = message;
+            sendInbox.appendMessages(massMessage);
             logger.info("Письмо отправленно");
             return true;
         } catch (MessagingException e) {
@@ -70,7 +75,7 @@ public class JavaMailSender {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream("src/main//resources/"+NameFile);
-            return IOUtils.toString(fis, "UTF-8");
+            return IOUtils.toString(fis, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
             return "";

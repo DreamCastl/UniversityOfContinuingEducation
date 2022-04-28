@@ -21,6 +21,8 @@ public class EmailProperties extends javax.mail.Authenticator
     private String SMTP_Server;
     private String SMTP_Port;
     private Properties IMAP_properties = new Properties() ;
+    private String getSendingInbox;
+    private String getReadInbox;
 
     private Properties AddImapProperties(Properties properties) {
         properties.put("mail.debug", "false");
@@ -30,7 +32,7 @@ public class EmailProperties extends javax.mail.Authenticator
         return properties;
     }
 
-    private String getReadInbox;
+
 
 
 
