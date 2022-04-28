@@ -63,7 +63,7 @@ public class MailsOperations extends Thread {
             while (TrackingRepository.statusLanch()) {
                 logger.info("Запуск потока");
                 Operation();
-                MailsOperations.sleep(3);
+                MailsOperations.sleep(300000);
             }
         } catch (InterruptedException e) {
             logger.info("Второй поток прерван");
