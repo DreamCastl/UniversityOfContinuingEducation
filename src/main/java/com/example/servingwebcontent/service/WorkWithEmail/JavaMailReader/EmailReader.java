@@ -17,6 +17,7 @@ public class EmailReader {
     private EmailProperties auth;
     private Folder inbox;
     private static final Logger logger = LogManager.getLogger();
+    private final String ReaderFolderName;
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -24,6 +25,7 @@ public class EmailReader {
         AddImapProperties(auth);
         this.auth = auth;
         inbox = getFolder(FolderName);
+        ReaderFolderName = FolderName;
     }
 
     private void AddImapProperties(EmailProperties auth){
@@ -38,6 +40,11 @@ public class EmailReader {
     public Message[] ReadMessage() {
 
         Message[] messages = new Message[0];
+        if (!inbox.isOpen()) {
+            logger.info("Папка закрыта");
+            inbox = getFolder(ReaderFolderName);
+        }
+
         try {
             logger.info("Попытка получения почты");
 
@@ -55,7 +62,8 @@ public class EmailReader {
             });
             return messages;
         } catch (MessagingException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
+            logger.error(e.getMessage());
             logger.warn("Получение писем не удалось");
         }
         return messages;
@@ -71,6 +79,7 @@ public class EmailReader {
         try {
             message.setFlag(Flags.Flag.SEEN,flag);
         } catch (MessagingException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -88,6 +97,7 @@ public class EmailReader {
             return inbox;
         } catch (MessagingException e) {
             logger.info("Ошибка открытия папки");
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
 

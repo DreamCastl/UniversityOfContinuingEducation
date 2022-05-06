@@ -71,6 +71,7 @@ public class DriverNMFO {
             return 0;
         } catch (Exception e) {
             logger.warn("Неудачная попытка входа. Пробуем еще раз");
+            logger.error(e.getMessage());
             return -1;
         }
     }
@@ -87,6 +88,7 @@ public class DriverNMFO {
 
         } catch (InterruptedException e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -100,6 +102,7 @@ public class DriverNMFO {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -129,6 +132,7 @@ public class DriverNMFO {
             }
             return false;
         } catch (InterruptedException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             return false;
         }

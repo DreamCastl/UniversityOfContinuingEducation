@@ -55,6 +55,7 @@ public class RowData {
 
     public static List<String> getInfoForGoogleSheet(Map<String, String> currentLine) {
         List<String> rez = new ArrayList<>();
+        rez.add(currentLine.get("info"));
         rez.add(currentLine.get("CourseName"));
         rez.add(currentLine.get("With"));
         rez.add(currentLine.get("On"));

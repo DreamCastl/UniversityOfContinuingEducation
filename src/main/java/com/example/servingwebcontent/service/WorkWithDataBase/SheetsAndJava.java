@@ -40,6 +40,7 @@ public class SheetsAndJava {
         try {
             sheetsService = getSheetsService();
         } catch (IOException | GeneralSecurityException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
 
@@ -90,6 +91,7 @@ public class SheetsAndJava {
                     .execute();
         } catch (IOException e) {
             logger.error("Err");
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
     }

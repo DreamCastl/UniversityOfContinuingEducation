@@ -16,9 +16,14 @@ public interface LaunchStatusTrackingRepository extends CrudRepository<LaunchSta
             Iterable<LaunchStatusTracking> status = this.findAll();
 
             boolean rez = false;
+            int MaxId = 0;
             for (LaunchStatusTracking tracking : status) {
-                rez = tracking.isMailOperationServiceRunning();
+                if (tracking.getId() > MaxId){
+                    MaxId = (int) tracking.getId();
+                    rez =    tracking.isMailOperationServiceRunning();
+                }
             }
+
             return rez;
 
         }

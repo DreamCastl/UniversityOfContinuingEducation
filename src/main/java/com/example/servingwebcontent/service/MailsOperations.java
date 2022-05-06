@@ -39,6 +39,7 @@ public class MailsOperations extends Thread {
     private DriverNMFO driverConnect;
     private NMFOProperties propertiesNMFO;
     private NMFOLocators locators;
+    private int counter = 0;
 
     public MailsOperations(LaunchStatusTrackingRepository trackingRepository,
                            GoogleSheetsProperties googleSheetsProperties,
@@ -63,9 +64,11 @@ public class MailsOperations extends Thread {
             while (TrackingRepository.statusLanch()) {
                 logger.info("Запуск потока");
                 Operation();
+                logger.info("Ожидание");
                 MailsOperations.sleep(300000);
             }
         } catch (InterruptedException e) {
+            logger.error(e.getMessage());
             logger.info("Второй поток прерван");
         } finally {
             TrackingRepository.save(new LaunchStatusTracking(false));
@@ -89,9 +92,14 @@ public class MailsOperations extends Thread {
                 .ReadMessage();//"письма")
 
         for (Message Message : messages) {
+            if (counter%20 == 0) {
+                driverConnect.getDriver().quit();
+                driverConnect = new DriverNMFO(propertiesNMFO,locators);
+            }
             logger.info("Начинаем разбирать письмо");
             try {
                 OperationWithMessage(Message);
+                counter += 1;
             } catch (Exception e) {
                 driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc();
                 workWithEmail.getEmailReader().SetFlagSeen(Message, false);
@@ -112,6 +120,7 @@ public class MailsOperations extends Thread {
         driverConnect.getDataNMFO(currentLine);
         if (currentLine.get("ApplicationCanceled").equals("true")) {
             logger.warn("Не нашел контент по заявке " + currentLine.get("Number"));
+            currentLine.put("info","Заявка отменена");
         } else {
             //7. Подтверждаем заявку на НМФО
             driverConnect.getSpoAndVoPage().setConfirmationCheckBox();//todo напомнить Насте на чекед знанчения контейнера чтобы дважды не подтверждать
@@ -128,6 +137,7 @@ public class MailsOperations extends Thread {
 
     private void getLineBaseInfo(Map<String, String> сurrentLine, Message message) {
         сurrentLine.put("Error", "false");
+        сurrentLine.put("info", "");
         сurrentLine.put("Data", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(new Date()));
         String Content = null;
         try {
@@ -140,6 +150,7 @@ public class MailsOperations extends Thread {
             сurrentLine.put("CourseName", ParserData.getNameProgramm(Content));
 
         } catch (MessagingException | IOException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             сurrentLine.put("Number", "");
             сurrentLine.put("Error", "true");

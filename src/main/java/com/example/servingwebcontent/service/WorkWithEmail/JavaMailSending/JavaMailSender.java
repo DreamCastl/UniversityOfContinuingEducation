@@ -4,10 +4,12 @@ import com.example.servingwebcontent.Config.EmailProperties;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -22,7 +24,7 @@ import java.util.Properties;
 public class JavaMailSender {
     static JavaMailSenderImpl emailSender;
 
-    private static final Logger logger = LogManager.getLogger();
+     private static final Logger logger = LogManager.getLogger();
 
     public JavaMailSender(EmailProperties emailProperties) {
 
@@ -43,6 +45,7 @@ public class JavaMailSender {
         try {
             helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
         } catch (MessagingException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -56,27 +59,36 @@ public class JavaMailSender {
          //  pathToAttachment = "/src/main/resources/ContractTemplates/"+ PropertiesSend.get("pathToAttachment");
             String pathToAttachment = PropertiesSend.get("pathToAttachment");
             FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
+
             helper.addAttachment(PropertiesSend.get("pathToAttachment"), file);
 
-        //    emailSender.send(message);
+            emailSender.send(message);
+            logger.info("Письмо отправлено");
             Message[] massMessage = new Message[1];
+            message.setFlag(Flags.Flag.SEEN,true);
+
             massMessage[0] = message;
             sendInbox.appendMessages(massMessage);
-            logger.info("Письмо отправленно");
+            logger.info("Письмо сохранено");
+            PropertiesSend.put("info","Обработана");
             return true;
         } catch (MessagingException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
-            logger.warn("Письмо не отправленно");
+            logger.error("Письмо не отправленно");
+            PropertiesSend.put("info","Письмо не отправленно");
             return false;
         }
     }
 
     private String GetTextLetterFromHTML(String NameFile){
-        FileInputStream fis = null;
+      //  FileInputStream fis = null;
         try {
-            fis = new FileInputStream("src/main//resources/"+NameFile);
-            return IOUtils.toString(fis, StandardCharsets.UTF_8);
+            //fis = new FileInputStream(  NameFile );
+            FileSystemResource file = new FileSystemResource(new File(NameFile));
+            return IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8);
         } catch (IOException e) {
+            logger.warn(e.getMessage());
             e.printStackTrace();
             return "";
         }

@@ -32,14 +32,15 @@ public class MailOperationService {
         boolean currentStatus = TrackingRepository.statusLanch();
 
         if (run && !currentStatus) {
+
             new MailsOperations(TrackingRepository,
                     GoogleSheetsProperties,
                     emailProperties,
                     NMFOProperties,
-                    NMFOLocators).start(); ;
+                    NMFOLocators).start();
             TrackingRepository.save(new LaunchStatusTracking(true));
         } else if (run && currentStatus ){
-            logger.info("Поток уже запущен");
+          logger.info("Поток уже запущен");
         }else if (!run) {
             TrackingRepository.save(new LaunchStatusTracking(false));
             logger.info("Поток останавливается");

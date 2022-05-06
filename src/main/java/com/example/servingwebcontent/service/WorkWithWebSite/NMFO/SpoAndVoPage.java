@@ -55,6 +55,7 @@ public class SpoAndVoPage {
             wait.until(visibilityOfElementLocated(By.xpath(cyclePcTasksBtn))).click(); //Циклы ПК: Заявки
             Thread.sleep(2000);
         } catch (InterruptedException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             driver.close();// TODO
         }
@@ -91,8 +92,9 @@ public class SpoAndVoPage {
             cells.forEach((WebElement cell) -> cellsMap.add(cell.findElement(By.xpath("./div")).getText()));
             return cellsMap;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
-            logger.warn("failed to get information");
+            logger.error("failed to get information");
             return cellsMap;
         }
     }
@@ -105,6 +107,7 @@ public class SpoAndVoPage {
             Thread.sleep(2000);
             logger.info("Заявка успешно подтверждена на сайте");
         } catch (InterruptedException e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             logger.warn("don't press CheckBox, fucking developers");
         }
@@ -121,6 +124,7 @@ public class SpoAndVoPage {
 //            Thread.sleep(2000);
 //            desktopPreparation();
 //        } catch (InterruptedException e) {
+//                    logger.error(e.getMessage());
 //            e.printStackTrace();
 //        }
     }
