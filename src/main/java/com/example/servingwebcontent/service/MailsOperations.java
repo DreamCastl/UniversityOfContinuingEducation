@@ -71,6 +71,7 @@ public class MailsOperations extends Thread {
             logger.error(e.getMessage());
             logger.info("Второй поток прерван");
         } finally {
+
             TrackingRepository.save(new LaunchStatusTracking(false));
             logger.info("Поток закончен");
         }
@@ -92,10 +93,15 @@ public class MailsOperations extends Thread {
                 .ReadMessage();//"письма")
 
         for (Message Message : messages) {
+
+
             if (counter%20 == 0) {
                 driverConnect.getDriver().quit();
                 driverConnect = new DriverNMFO(propertiesNMFO,locators);
             }
+            if (!TrackingRepository.statusLanch()) {
+                driverConnect.getDriver().quit();
+                break;}
             logger.info("Начинаем разбирать письмо");
             try {
                 OperationWithMessage(Message);

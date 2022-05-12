@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RowData {
@@ -39,10 +40,10 @@ public class RowData {
         currentLine.put("AdditionalInformation", clientInfo.get(19));
         currentLine.put("Comment", clientInfo.get(20));
 
-        if (currentLine.get("Payer").equals("Физическое лицо")) {   //TODO Перенести во внешний файл или БД
+        if (currentLine.get("Payer").toLowerCase(Locale.ROOT).contains("физическое лицо") || currentLine.get("Payer").equals("")) {   //TODO Перенести во внешний файл или БД
             currentLine.put("NameFileHTML", "Шаблон_НМО_Физ_лица.html");
             currentLine.put("pathToAttachment", "Договор_НМО физ лица.docx");
-        } else if (currentLine.get("Payer").equals("Юридическое лицо")) {
+        } else if (currentLine.get("Payer").toLowerCase(Locale.ROOT).contains("юридическое лицо")) {
             currentLine.put("NameFileHTML", "Шаблон_НМО__Юр_Лица.html");
             currentLine.put("pathToAttachment", "Шаблон Договор повышение квалификации Юр.Л.docx");
         } else {

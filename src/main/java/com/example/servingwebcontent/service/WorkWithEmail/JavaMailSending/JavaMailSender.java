@@ -68,6 +68,7 @@ public class JavaMailSender {
             message.setFlag(Flags.Flag.SEEN,true);
 
             massMessage[0] = message;
+
             sendInbox.appendMessages(massMessage);
             logger.info("Письмо сохранено");
             PropertiesSend.put("info","Обработана");
