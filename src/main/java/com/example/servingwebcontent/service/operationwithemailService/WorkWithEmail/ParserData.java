@@ -1,4 +1,4 @@
-package com.example.servingwebcontent.service.WorkWithEmail;
+package com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,7 +1,7 @@
-package com.example.servingwebcontent.service.WorkWithEmail;
+package com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail;
 
-import com.example.servingwebcontent.service.WorkWithEmail.JavaMailReader.EmailReader;
-import com.example.servingwebcontent.service.WorkWithEmail.JavaMailSending.JavaMailSender;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailReader.EmailReader;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailSending.JavaMailSender;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,8 +1,8 @@
-package com.example.servingwebcontent.service.WorkWithWebSite.NMFO;
+package com.example.servingwebcontent.service.operationwithemailService.NMFO;
 
-import com.example.servingwebcontent.Config.NMFOLocators;
-import com.example.servingwebcontent.Config.NMFOProperties;
-import com.example.servingwebcontent.service.RowData;
+import com.example.servingwebcontent.Config.operationwithemailService.NMFOLocators;
+import com.example.servingwebcontent.Config.operationwithemailService.NMFOProperties;
+import com.example.servingwebcontent.service.operationwithemailService.RowData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;

@@ -1,4 +1,4 @@
-package com.example.servingwebcontent.Config;
+package com.example.servingwebcontent.Config.operationwithemailService;
 
 import lombok.Data;
 import lombok.Getter;
@@ -11,7 +11,6 @@ import java.util.Properties;
 @ConfigurationProperties(prefix = "email.properties")
 @Component
 @Data
-@Getter
 public class EmailProperties extends javax.mail.Authenticator
 {
     private String login   ;
@@ -32,32 +31,9 @@ public class EmailProperties extends javax.mail.Authenticator
         return properties;
     }
 
-
-
-
-
     public PasswordAuthentication getPasswordAuthentication()
     {
         return new PasswordAuthentication(login, password);
     }
 
-//    public String getLogin() {
-//        return login;
-//    }
-//
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public Properties getIMAP_properties() {
-//        return IMAP_properties;
-//    }
-//
-//    public String getSMTP_Server() {
-//        return SMTP_Server;
-//    }
-//
-//    public String getSMTP_Port() {
-//        return SMTP_Port;
-//    }
 }

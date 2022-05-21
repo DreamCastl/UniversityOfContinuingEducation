@@ -1,10 +1,9 @@
-package com.example.servingwebcontent.service.WorkWithEmail.JavaMailSending;
+package com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailSending;
 
-import com.example.servingwebcontent.Config.EmailProperties;
+import com.example.servingwebcontent.Config.operationwithemailService.EmailProperties;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +14,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -62,22 +60,22 @@ public class JavaMailSender {
 
             helper.addAttachment(PropertiesSend.get("pathToAttachment"), file);
 
-            emailSender.send(message);
-            logger.info("Письмо отправлено");
             Message[] massMessage = new Message[1];
-            message.setFlag(Flags.Flag.SEEN,true);
-
             massMessage[0] = message;
-
             sendInbox.appendMessages(massMessage);
             logger.info("Письмо сохранено");
+
+            emailSender.send(message);
+            logger.info("Письмо отправлено");
+            message.setFlag(Flags.Flag.SEEN,true);
+
             PropertiesSend.put("info","Обработана");
             return true;
-        } catch (MessagingException e) {
+        } catch (Exception e ) {
             logger.error(e.getMessage());
             e.printStackTrace();
-            logger.error("Письмо не отправленно");
-            PropertiesSend.put("info","Письмо не отправленно");
+            logger.error("Письмо не отправлено");
+            PropertiesSend.put("info","Письмо не отправлено");
             return false;
         }
     }

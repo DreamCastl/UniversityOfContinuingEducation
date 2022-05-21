@@ -1,6 +1,6 @@
-package com.example.servingwebcontent.repositories;
+package com.example.servingwebcontent.repositories.operationwithemailService;
 
-import com.example.servingwebcontent.models.LaunchStatusTracking;
+import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

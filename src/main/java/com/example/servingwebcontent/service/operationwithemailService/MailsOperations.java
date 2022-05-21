@@ -1,20 +1,19 @@
-package com.example.servingwebcontent.service;
+package com.example.servingwebcontent.service.operationwithemailService;
 
-import com.example.servingwebcontent.Config.EmailProperties;
-import com.example.servingwebcontent.Config.GoogleSheetsProperties;
-import com.example.servingwebcontent.Config.NMFOLocators;
-import com.example.servingwebcontent.Config.NMFOProperties;
-import com.example.servingwebcontent.models.LaunchStatusTracking;
-import com.example.servingwebcontent.repositories.LaunchStatusTrackingRepository;
-import com.example.servingwebcontent.service.WorkWithDataBase.SheetsAndJava;
-import com.example.servingwebcontent.service.WorkWithEmail.JavaMailReader.EmailReader;
-import com.example.servingwebcontent.service.WorkWithEmail.JavaMailSending.JavaMailSender;
-import com.example.servingwebcontent.service.WorkWithEmail.ParserData;
-import com.example.servingwebcontent.service.WorkWithEmail.WorkWithEmail;
-import com.example.servingwebcontent.service.WorkWithWebSite.NMFO.DriverNMFO;
+import com.example.servingwebcontent.Config.operationwithemailService.EmailProperties;
+import com.example.servingwebcontent.Config.operationwithemailService.NMFOLocators;
+import com.example.servingwebcontent.Config.operationwithemailService.NMFOProperties;
+import com.example.servingwebcontent.Config.operationwithemailService.SetSpreadSheetTable;
+import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
+import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.SheetsAndJava;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailReader.EmailReader;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailSending.JavaMailSender;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.ParserData;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.WorkWithEmail;
+import com.example.servingwebcontent.service.operationwithemailService.NMFO.DriverNMFO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
@@ -30,11 +29,11 @@ public class MailsOperations extends Thread {
     private static final Logger logger = LogManager.getLogger();
 
     private LaunchStatusTrackingRepository TrackingRepository;
-    @Autowired
-    private GoogleSheetsProperties googleSheetsProperties;
+
+    private SetSpreadSheetTable SettingsTable;
     private EmailProperties emailProperties;
     private WorkWithEmail workWithEmail;
-    @Autowired
+
     private SheetsAndJava sheetsService;
     private DriverNMFO driverConnect;
     private NMFOProperties propertiesNMFO;
@@ -42,12 +41,12 @@ public class MailsOperations extends Thread {
     private int counter = 0;
 
     public MailsOperations(LaunchStatusTrackingRepository trackingRepository,
-                           GoogleSheetsProperties googleSheetsProperties,
+                           SetSpreadSheetTable settingsTable ,
                            EmailProperties emailProperties,
                            NMFOProperties NMFOProperties,
                            NMFOLocators NMFOLocators) {
         TrackingRepository = trackingRepository;
-        this.googleSheetsProperties = googleSheetsProperties;
+        this.SettingsTable = settingsTable;
         this.emailProperties = emailProperties;
         this.propertiesNMFO = NMFOProperties;
         this.locators = NMFOLocators;
@@ -79,7 +78,7 @@ public class MailsOperations extends Thread {
 
     private void Initialization() {
         logger.info("Инициализация");
-        sheetsService = new SheetsAndJava(googleSheetsProperties);
+        sheetsService = new SheetsAndJava(SettingsTable);
         workWithEmail = new WorkWithEmail(
                 new EmailReader(emailProperties,emailProperties.getGetReadInbox())
                 ,new JavaMailSender(emailProperties)

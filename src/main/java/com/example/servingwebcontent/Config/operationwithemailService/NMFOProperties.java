@@ -1,4 +1,4 @@
-package com.example.servingwebcontent.Config;
+package com.example.servingwebcontent.Config.operationwithemailService;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

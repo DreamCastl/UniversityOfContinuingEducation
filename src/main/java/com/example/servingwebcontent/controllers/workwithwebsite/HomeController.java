@@ -1,4 +1,4 @@
-package com.example.servingwebcontent.controllers;
+package com.example.servingwebcontent.controllers.workwithwebsite;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +19,16 @@ public class HomeController {
         return "Home";
     }
 
+    @GetMapping("/")
+    public String BasePage(Model model) {
+        model.addAttribute("linkActiveHome", "nav-link active");
+        model.addAttribute("linkActiveIncomingRequest", "nav-link");
+        return "Home";
+    }
 
+    @GetMapping("/success")
+    public String getSuccessPage() {
+        return "success";
+    }
 
 }

@@ -1,9 +1,12 @@
-package com.example.servingwebcontent.service;
+package com.example.servingwebcontent.service.operationwithemailService;
 
 
-import com.example.servingwebcontent.Config.*;
-import com.example.servingwebcontent.models.LaunchStatusTracking;
-import com.example.servingwebcontent.repositories.LaunchStatusTrackingRepository;
+import com.example.servingwebcontent.Config.operationwithemailService.EmailProperties;
+import com.example.servingwebcontent.Config.operationwithemailService.NMFOLocators;
+import com.example.servingwebcontent.Config.operationwithemailService.NMFOProperties;
+import com.example.servingwebcontent.Config.operationwithemailService.SetSpreadSheetTable;
+import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
+import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +14,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MailOperationService {
+
     @Autowired
-    protected GoogleSheetsProperties GoogleSheetsProperties;
+    private SetSpreadSheetTable settingsTable;
     @Autowired
     private EmailProperties emailProperties;
     @Autowired
-    private NMFOLocators NMFOLocators;
+    private NMFOLocators nmfoLocators;
     @Autowired
-    private NMFOProperties NMFOProperties;
+    private NMFOProperties nmfoProperties;
     @Autowired
     protected LaunchStatusTrackingRepository TrackingRepository;
     @Autowired
@@ -34,10 +38,10 @@ public class MailOperationService {
         if (run && !currentStatus) {
 
             new MailsOperations(TrackingRepository,
-                    GoogleSheetsProperties,
+                    settingsTable,
                     emailProperties,
-                    NMFOProperties,
-                    NMFOLocators).start();
+                    nmfoProperties,
+                    nmfoLocators).start();
             TrackingRepository.save(new LaunchStatusTracking(true));
         } else if (run && currentStatus ){
           logger.info("Поток уже запущен");

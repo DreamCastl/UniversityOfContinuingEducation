@@ -1,4 +1,4 @@
-package com.example.servingwebcontent.service.WorkWithWebSite.NMFO;
+package com.example.servingwebcontent.service.operationwithemailService.NMFO;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
