@@ -6,7 +6,9 @@ import com.example.servingwebcontent.Config.operationwithemailService.NMFOLocato
 import com.example.servingwebcontent.Config.operationwithemailService.NMFOProperties;
 import com.example.servingwebcontent.Config.operationwithemailService.SetSpreadSheetTable;
 import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
+import com.example.servingwebcontent.repositories.operationwithemailService.ClientRepository;
 import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
+import com.example.servingwebcontent.repositories.operationwithemailService.RequestForTrainingRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,10 @@ public class MailOperationService {
     protected LaunchStatusTrackingRepository TrackingRepository;
     @Autowired
     private MailsOperations mailsOperations;
+    @Autowired
+    protected RequestForTrainingRepository requestForTrainingRepository;
+    @Autowired
+    protected ClientRepository clientRepository;
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -41,7 +47,9 @@ public class MailOperationService {
                     settingsTable,
                     emailProperties,
                     nmfoProperties,
-                    nmfoLocators).start();
+                    nmfoLocators,
+                    clientRepository,
+                    requestForTrainingRepository).start();
             TrackingRepository.save(new LaunchStatusTracking(true));
         } else if (run && currentStatus ){
           logger.info("Поток уже запущен");

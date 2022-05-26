@@ -1,6 +1,7 @@
 package com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailSending;
 
 import com.example.servingwebcontent.Config.operationwithemailService.EmailProperties;
+import com.example.servingwebcontent.models.operationwithemailService.RequestForTraining;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,7 @@ public class JavaMailSender {
 
     }
 
-    public boolean sendMessageWithAttachment(Map<String, String> PropertiesSend, Folder sendInbox) {
+    public boolean sendMessageWithAttachment(RequestForTraining currentRequest, Folder sendInbox) {
 
         MimeMessage message = emailSender.createMimeMessage();
 
@@ -50,32 +51,43 @@ public class JavaMailSender {
 
         try {
             helper.setFrom(emailSender.getUsername());
-            helper.setTo(PropertiesSend.get("Email"));
-            helper.setSubject(PropertiesSend.get("subject"));
-            helper.setText(GetTextLetterFromHTML(PropertiesSend.get("NameFileHTML")),true);
+            helper.setTo(currentRequest.getClient().getEmail());
+            helper.setSubject("Заявка на обучение "+currentRequest.getNumberRequest());
+            //     helper.setText(GetTextLetterFromHTML(PropertiesSend.get("NameFileHTML")),true);TODO придумать где хранить
 
-         //  pathToAttachment = "/src/main/resources/ContractTemplates/"+ PropertiesSend.get("pathToAttachment");
-            String pathToAttachment = PropertiesSend.get("pathToAttachment");
-            FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
+      //      String pathToAttachment = PropertiesSend.get("pathToAttachment"); TODO придумать где хранить, договор зависит от Payera// Хранить в объекте?
+            // TODO    FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
 
-            helper.addAttachment(PropertiesSend.get("pathToAttachment"), file);
+        // TODO    helper.addAttachment(PropertiesSend.get("pathToAttachment"), file);
 
-            Message[] massMessage = new Message[1];
-            massMessage[0] = message;
-            sendInbox.appendMessages(massMessage);
+
             logger.info("Письмо сохранено");
 
             emailSender.send(message);
             logger.info("Письмо отправлено");
-            message.setFlag(Flags.Flag.SEEN,true);
 
-            PropertiesSend.put("info","Обработана");
+
+            Message[] massMessage = new Message[1];
+            message.setFlag(Flags.Flag.SEEN,true);
+            massMessage[0] = message;
+            sendInbox.appendMessages(massMessage);
+
+            //  currentRequest.setStatus(Status );TODO "Обработана"
             return true;
         } catch (Exception e ) {
+
+            try {
+                Message[] massMessage = new Message[1];
+                message.setFlag(Flags.Flag.SEEN, false);
+                massMessage[0] = message;
+                sendInbox.appendMessages(massMessage);
+            }catch (Exception e2 ) {
+                logger.error("Не сохранил в папку отправленные, переменные тут уже мертвы.");
+            }
             logger.error(e.getMessage());
             e.printStackTrace();
             logger.error("Письмо не отправлено");
-            PropertiesSend.put("info","Письмо не отправлено");
+            //  currentRequest.setStatus(Status );TODO "Письмо не отправлено"
             return false;
         }
     }
@@ -104,29 +116,6 @@ public class JavaMailSender {
                 "javax.net.ssl.SSLSocketFactory");
     }
 
-
-    public void SaveMessage(){
-//        Session session = Session.getDefaultInstance(props, null);
-//        Store store = session.getStore("imap");
-//        store.connect(host, "user", "userpwd");
-//
-//        Folder folder = (Folder) store.getFolder("Sent");
-//        if (!folder.exists()) {
-//            folder.create(Folder.HOLDS_MESSAGES);
-//        }
-//        folder.open(Folder.READ_WRITE);
-//        System.out.println("appending...");
-//        try {
-//            folder.appendMessages(new Message[]{message});
-//            // Message[] msgs = folder.getMessages();
-//            message.setFlag(FLAGS.Flag.RECENT, true);
-//        } catch (Exception ignore) {
-//            System.out.println("error processing message " + ignore.getMessage());
-//        } finally {
-//            store.close();
-//            folder.close(false);
-//        }
-    }
 }
 
 

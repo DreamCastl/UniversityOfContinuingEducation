@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -110,15 +111,16 @@ public class DriverNMFO {
         return AuthorizationConnect;
     }
 
-    public void getDataNMFO(Map<String, String> currentLine) {
-        logger.info("------------>" + currentLine.get("Number") + "<------------");
-        if (currentLine.get("Number").contains("NMOV")) {
+    public List<String> getDataNMFO(String Number) {
+        logger.info("------------>" + Number + "<------------");
+        if (Number.contains("NMOV")) {
             DriverNMFO.voPageDesktopPreparation(driver);//TODO убрать статику, сделать метод приватным
         } else {
             DriverNMFO.spoPageDesktopPreparation(driver);//TODO убрать статику, сделать метод приватным
         }
-        getSpoAndVoPage().searchForApplication(currentLine.get("Number")); //TODO убрать статику, сделать метод приватным, в парсер добавить вытаскивание из письма
-        RowData.AddClientData(getSpoAndVoPage().getClientInfo(),currentLine);
+        getSpoAndVoPage().searchForApplication(Number); //TODO убрать статику, сделать метод приватным, в парсер добавить вытаскивание из письма
+        return getSpoAndVoPage().getClientInfo();
+
     }
 
     private static boolean checkingUrl(WebDriver driver) {

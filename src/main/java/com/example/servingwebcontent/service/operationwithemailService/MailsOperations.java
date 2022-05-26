@@ -5,7 +5,11 @@ import com.example.servingwebcontent.Config.operationwithemailService.NMFOLocato
 import com.example.servingwebcontent.Config.operationwithemailService.NMFOProperties;
 import com.example.servingwebcontent.Config.operationwithemailService.SetSpreadSheetTable;
 import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
+import com.example.servingwebcontent.models.operationwithemailService.RequestForTraining;
+import com.example.servingwebcontent.models.operationwithemailService.Status;
+import com.example.servingwebcontent.repositories.operationwithemailService.ClientRepository;
 import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
+import com.example.servingwebcontent.repositories.operationwithemailService.RequestForTrainingRepository;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.SheetsAndJava;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailReader.EmailReader;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailSending.JavaMailSender;
@@ -14,6 +18,7 @@ import com.example.servingwebcontent.service.operationwithemailService.WorkWithE
 import com.example.servingwebcontent.service.operationwithemailService.NMFO.DriverNMFO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
@@ -38,18 +43,26 @@ public class MailsOperations extends Thread {
     private DriverNMFO driverConnect;
     private NMFOProperties propertiesNMFO;
     private NMFOLocators locators;
+
+    protected RequestForTrainingRepository requestForTrainingRepository;
+    protected ClientRepository clientRepository;
     private int counter = 0;
 
     public MailsOperations(LaunchStatusTrackingRepository trackingRepository,
                            SetSpreadSheetTable settingsTable ,
                            EmailProperties emailProperties,
                            NMFOProperties NMFOProperties,
-                           NMFOLocators NMFOLocators) {
+                           NMFOLocators NMFOLocators,
+                           ClientRepository clientRepository ,
+                           RequestForTrainingRepository requestForTrainingRepository) {
         TrackingRepository = trackingRepository;
         this.SettingsTable = settingsTable;
         this.emailProperties = emailProperties;
         this.propertiesNMFO = NMFOProperties;
         this.locators = NMFOLocators;
+        this.requestForTrainingRepository= requestForTrainingRepository;
+        this.clientRepository = clientRepository;
+
         logger.info("Поток запущен");
         // this.start();
     }
@@ -93,10 +106,11 @@ public class MailsOperations extends Thread {
 
         for (Message Message : messages) {
 
-
-            if (counter%20 == 0) {
+            logger.info("Запуск " +counter + " " +counter%20);
+            if (counter%10 == 0) {
                 driverConnect.getDriver().quit();
                 driverConnect = new DriverNMFO(propertiesNMFO,locators);
+                logger.info("Перезагрузка драйвере");
             }
             if (!TrackingRepository.statusLanch()) {
                 driverConnect.getDriver().quit();
@@ -115,57 +129,26 @@ public class MailsOperations extends Thread {
 
     private void OperationWithMessage(Message message) throws Exception {
 
-        Map<String, String> currentLine = new HashMap<>();
-        getLineBaseInfo(currentLine, message);
+        RequestForTraining currentRequest = new RequestForTraining(message,workWithEmail);
 
-        if (currentLine.get("Error").equals("true")) {
-            throw new Exception();
-        }
         // 5. Получаем данные с НМФО
-        driverConnect.getDataNMFO(currentLine);
-        if (currentLine.get("ApplicationCanceled").equals("true")) {
-            logger.warn("Не нашел контент по заявке " + currentLine.get("Number"));
-            currentLine.put("info","Заявка отменена");
+        currentRequest.AddDateFromNMFO(driverConnect.getDataNMFO(currentRequest.getNumberRequest())) ;
+        if (currentRequest.getClient() == null) {
+            logger.warn("Не нашел контент по заявке " + currentRequest.getNumberRequest());
+          //  currentRequest.setStatus(Status ОТМЕНЕНА); TODO Тащим из репозитория
         } else {
             //7. Подтверждаем заявку на НМФО
             driverConnect.getSpoAndVoPage().setConfirmationCheckBox();//todo напомнить Насте на чекед знанчения контейнера чтобы дважды не подтверждать
             driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
             //8. Отправляем письмо на почту.
-            workWithEmail.sendMessage(currentLine);
+            workWithEmail.sendMessage(currentRequest);
         }
         // 9. Записываем строку в google Sheet
-        sheetsService.AppendRow("Заявки", RowData.getInfoForGoogleSheet(currentLine));
+        requestForTrainingRepository.save(currentRequest); // TODO переделать сейв т.к. есть вложенный, не факт что работает...
+      //TODO Временно будем писать в 2 БД  sheetsService.AppendRow("Заявки", RowData.getInfoForGoogleSheet(currentLine));
         workWithEmail.getEmailReader().
                 SetFlagSeen(message, true);
         logger.info("------------> END <------------");
-    }
-
-    private void getLineBaseInfo(Map<String, String> сurrentLine, Message message) {
-        сurrentLine.put("Error", "false");
-        сurrentLine.put("info", "");
-        сurrentLine.put("Data", new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(new Date()));
-        String Content = null;
-        try {
-            Content = workWithEmail.getEmailReader()
-                    .GetContentMail(message);
-            ParserData ParserData = new ParserData();//TODO Передалать в компоненту ?
-            сurrentLine.put("Number", ParserData.NumberApplicationFromContext(Content));
-            сurrentLine.put("With", ParserData.getWithDate(Content));
-            сurrentLine.put("On", ParserData.getOnDate(Content));
-            сurrentLine.put("CourseName", ParserData.getNameProgramm(Content));
-
-        } catch (MessagingException | IOException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-            сurrentLine.put("Number", "");
-            сurrentLine.put("Error", "true");
-            logger.warn("Не удалось получить контент из письма");
-        } finally {
-            workWithEmail.getEmailReader()
-                    .SetFlagSeen(message, false);
-        }
-        сurrentLine.put("Payer", "");
-        сurrentLine.put("Email", "");
     }
 
 }

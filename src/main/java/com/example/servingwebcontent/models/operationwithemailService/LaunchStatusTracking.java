@@ -9,6 +9,7 @@ import javax.persistence.Id;
 @Entity
 public class LaunchStatusTracking {
 
+    //Не поняла для сего это так что не расставила связи
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

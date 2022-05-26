@@ -1,5 +1,6 @@
 package com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail;
 
+import com.example.servingwebcontent.models.operationwithemailService.RequestForTraining;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailReader.EmailReader;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.JavaMailSending.JavaMailSender;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import javax.mail.Folder;
 import java.util.Map;
 
 @Getter
-public class WorkWithEmail {
+public class WorkWithEmail { //TODO сделать единым
     EmailReader emailReader;
     JavaMailSender javaMailSender;
     Folder sendInbox;
@@ -24,12 +25,12 @@ public class WorkWithEmail {
         this.sendInbox = this.emailReader.getFolder(sendInboxName);
     }
 
-    public void sendMessage(Map<String, String> currentLine) {
+    public void sendMessage(RequestForTraining currentRequest) {
 
         if (! sendInbox.isOpen()) {
             logger.info("Папка исходящих закрыта");
             sendInbox = this.emailReader.getFolder(sendInboxName);
         }
-        javaMailSender.sendMessageWithAttachment(currentLine,sendInbox);
+        javaMailSender.sendMessageWithAttachment(currentRequest,sendInbox);
     }
 }
