@@ -1,5 +1,7 @@
 package com.example.servingwebcontent.controllers.operationwithemailService;
 
+import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
+import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
 import com.example.servingwebcontent.service.operationwithemailService.MailOperationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class IncomingRequestController {
     private static final Logger logger = LogManager.getLogger();
     @Autowired
-    private MailOperationService mailOperationService;
+    private LaunchStatusTrackingRepository TrackingRepository;
 
     @GetMapping("/IncomingRequest")
     @PreAuthorize("hasAuthority('read')")
@@ -29,7 +31,8 @@ public class IncomingRequestController {
     @PreAuthorize("hasAuthority('write')")
     public String IncomingRequestPageStart(Model model) {
 
-        mailOperationService.serviceRunner(true);
+        TrackingRepository.save(new LaunchStatusTracking(true));
+        logger.info("Поток запущен");
         return "redirect:/IncomingRequest";
     }
 
@@ -37,7 +40,8 @@ public class IncomingRequestController {
     @PreAuthorize("hasAuthority('write')")
     public String IncomingRequestPageStop(Model model) {
         logger.info("Остановка алгоритма");
-        mailOperationService.serviceRunner(false);
+        TrackingRepository.save(new LaunchStatusTracking(false));
+        logger.info("Поток останавливается");
         return "redirect:/IncomingRequest";
     }
 

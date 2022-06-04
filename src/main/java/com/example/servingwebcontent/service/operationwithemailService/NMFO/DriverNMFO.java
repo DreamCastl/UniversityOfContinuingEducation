@@ -2,14 +2,12 @@ package com.example.servingwebcontent.service.operationwithemailService.NMFO;
 
 import com.example.servingwebcontent.Config.operationwithemailService.NMFOLocators;
 import com.example.servingwebcontent.Config.operationwithemailService.NMFOProperties;
-import com.example.servingwebcontent.service.operationwithemailService.RowData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -77,7 +75,7 @@ public class DriverNMFO {
         }
     }
 
-    public static void voPageDesktopPreparation(WebDriver driver) {
+    private void voPageDesktopPreparation() {
         do {
             logger.info("Переход на NMOV");
             driver.get(voPage);
@@ -93,7 +91,7 @@ public class DriverNMFO {
         }
     }
 
-    public static void spoPageDesktopPreparation(WebDriver driver) {
+    private void spoPageDesktopPreparation() {
         do {
             logger.info("Переход на NMOS");
             driver.get(spoPage);
@@ -114,12 +112,12 @@ public class DriverNMFO {
     public List<String> getDataNMFO(String Number) {
         logger.info("------------>" + Number + "<------------");
         if (Number.contains("NMOV")) {
-            DriverNMFO.voPageDesktopPreparation(driver);//TODO убрать статику, сделать метод приватным
+            voPageDesktopPreparation();
         } else {
-            DriverNMFO.spoPageDesktopPreparation(driver);//TODO убрать статику, сделать метод приватным
+            spoPageDesktopPreparation();
         }
-        getSpoAndVoPage().searchForApplication(Number); //TODO убрать статику, сделать метод приватным, в парсер добавить вытаскивание из письма
-        return getSpoAndVoPage().getClientInfo();
+        spoAndVoPage.searchForApplication(Number); //TODO убрать статику, сделать метод приватным, в парсер добавить вытаскивание из письма
+        return spoAndVoPage.getClientInfo();
 
     }
 

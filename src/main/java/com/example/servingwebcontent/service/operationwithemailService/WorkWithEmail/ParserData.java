@@ -8,9 +8,51 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ParserData {
     private static final Logger logger = LogManager.getLogger();
+
+    public static boolean EmployerApproved(String s) {
+        return !s.equals("Не одобрено");
+    }
+
+    public static boolean NotOrYes(String s) {
+        return !s.equals("Нет");
+    }
+
+    public static String getPlayer(String s) {
+        if (s.toLowerCase(Locale.ROOT).contains("физическое лицо") || s.equals("")) {
+            return "физическое лицо";
+        } else if (s.toLowerCase(Locale.ROOT).contains("юридическое лицо")) {
+            return "юридическое лицо";
+        } else {
+            logger.warn("ОШИБКА");
+            return "физическое лицо";
+        }
+    }
+
+    public static Date getDate(String s) {
+        if (s.equals("")) {
+            return new Date(1, 1, 1);
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat();// TODO а не запихать ли в парсерс сделав его объектом...
+            format.applyPattern("dd.MM.yyyy");
+            if (s.length() == 4) {
+                s = "01.01." + s;
+            }
+                try {
+                    return format.parse(s);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return new Date(1, 1, 1);
+                }
+
+        }
+    }
 
     public String NumberApplicationFromContext(String cont){
         return cont.substring(cont.indexOf("подал-(а) заявку")+17,cont.indexOf(" на цикл по"));

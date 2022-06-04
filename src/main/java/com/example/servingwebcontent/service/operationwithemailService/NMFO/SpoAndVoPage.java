@@ -32,7 +32,7 @@ public class SpoAndVoPage {
     public SpoAndVoPage(WebDriver driver, NMFOLocators locators) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
-        // TODO кто он по MVC Spring ?
+
         registryBtn = locators.getRegistryBtn();
         cyclePcTasksBtn = locators.getCyclePcTasksBtn();
         numberRequestField = locators.getNumberRequestField();
