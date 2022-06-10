@@ -167,7 +167,7 @@ public class WorkWithEmail {
             helper.addAttachment(pathToAttachment, file);
 
 
-            //TODO    emailSender.send(message);
+            emailSender.send(message);
             logger.info("Письмо отправлено");
 
 

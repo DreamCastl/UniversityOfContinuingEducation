@@ -123,7 +123,7 @@ public class MailOperationService {
             logger.warn("Не нашел контент по заявке " + currentRequest.getNumberRequest());
         } else {
             //7. Подтверждаем заявку на НМФО
-            //todo   driverConnect.getSpoAndVoPage().setConfirmationCheckBox();//todo напомнить Насте на чекед знанчения контейнера чтобы дважды не подтверждать
+            driverConnect.getSpoAndVoPage().setConfirmationCheckBox();//todo напомнить Насте на чекед знанчения контейнера чтобы дважды не подтверждать
             currentRequest.setRequestConfirmed(true);
             driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
             //8. Отправляем письмо на почту.

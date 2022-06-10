@@ -54,6 +54,20 @@ public class ParserData {
         }
     }
 
+    public static String ValueToString(boolean paymentReceived) {
+        return paymentReceived ? "да" :"Нет";
+    }
+
+    public static String ValueToString(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat();// TODO а не запихать ли в парсерс сделав его объектом...
+        format.applyPattern("dd.MM.yyyy");
+        return format.format(date);
+    }
+
+    public static String ValueToString(String specialization) {
+        return specialization;
+    }
+
     public String NumberApplicationFromContext(String cont){
         return cont.substring(cont.indexOf("подал-(а) заявку")+17,cont.indexOf(" на цикл по"));
     }
