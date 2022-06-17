@@ -10,6 +10,8 @@ import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,21 +37,17 @@ public class ParserData {
         }
     }
 
-    public static Date getDate(String s) {
+    public static LocalDate getDate(String s) {
         if (s.equals("")) {
-            return new Date(1, 1, 1);
+
+            return LocalDate.of(1,1,1);
         } else {
             SimpleDateFormat format = new SimpleDateFormat();// TODO а не запихать ли в парсерс сделав его объектом...
             format.applyPattern("dd.MM.yyyy");
             if (s.length() == 4) {
                 s = "01.01." + s;
             }
-                try {
-                    return format.parse(s);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    return new Date(1, 1, 1);
-                }
+            return LocalDate.parse(s, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
         }
     }
@@ -58,15 +56,16 @@ public class ParserData {
         return paymentReceived ? "да" :"Нет";
     }
 
-    public static String ValueToString(Date date) {
+    public static String ValueToString(LocalDate date) {
         SimpleDateFormat format = new SimpleDateFormat();// TODO а не запихать ли в парсерс сделав его объектом...
         format.applyPattern("dd.MM.yyyy");
-        return format.format(date);
+        return date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     public static String ValueToString(String specialization) {
         return specialization;
     }
+
 
     public String NumberApplicationFromContext(String cont){
         return cont.substring(cont.indexOf("подал-(а) заявку")+17,cont.indexOf(" на цикл по"));

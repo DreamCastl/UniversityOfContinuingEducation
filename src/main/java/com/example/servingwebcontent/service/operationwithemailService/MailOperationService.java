@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import javax.mail.Message;
 import java.util.Date;
 
+
 @Service
+//@Scheduled
 public class MailOperationService {
     // инжектим настройки.
     @Autowired

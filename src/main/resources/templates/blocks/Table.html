@@ -5,13 +5,42 @@
             </thead>
             <tbody>
 
-            <div th:each="el,state : ${requests}">
+            <div th:each="el,state: ${requests}">
                 <tr>
-                    <td th:text="${state.count}">
+                    <td th:text="${state.index}">
                     <td th:text="${el.dateOperation}">
+                    <td th:text="${el.status}">
+                    <td th:text="${el.NameProgramTraining}">
+                    <td th:text="${el.startDate}">
+                    <td th:text="${el.endDate}">
+                    <td th:text="${el.numberRequest}">
+                    <td th:text="${el.fullName}">
+                    <td th:text="${el.snils}">
+                    <td th:text="${el.bithDay}">
+                    <td th:text="${el.region}">
+                    <td th:text="${el.specialization}">
+                    <td th:text="${el.job}">
+                    <td th:text="${el.regionJob}">
+                    <td th:text="${el.position}">
+                    <td th:text="${el.dateRequest}">
+                    <td th:text="${el.employerApproved}">
+                    <td th:text="${el.requestConfirmed}">
+                    <td th:text="${el.foundationOfEducation}">
+                    <td th:text="${el.employerApproved}">
+                    <td th:text="${el.paid}">
+                    <td th:text="${el.paymentDate}">
+                    <td th:text="${el.paymentReceived}">
+                    <td th:text="${el.email}">
+                    <td th:text="${el.telephoneNumber}">
+                    <td th:text="${el.payer}">
+                    <td th:text="${el.additionalInformation}">
+                    <td th:text="${el.comment}">
+                    <td th:text="${el.clientAdditionalInformation}">
+                    <td th:text="${el.clientComment}">
+                    <td th:text="${el.commentUniversity}">
+
                 </tr>
             </div>
-
             </tbody>
         </table>
     </div>

@@ -2,6 +2,7 @@ package com.example.servingwebcontent.service.operationwithemailService.WorkWith
 
 import com.example.servingwebcontent.Config.operationwithemailService.EmailProperties;
 import com.example.servingwebcontent.models.operationwithemailService.RequestForTraining;
+import com.example.servingwebcontent.models.operationwithemailService.Status;
 import com.example.servingwebcontent.repositories.operationwithemailService.StatusRepository;
 import lombok.Getter;
 import org.apache.commons.io.IOUtils;
@@ -166,17 +167,27 @@ public class WorkWithEmail {
             FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
             helper.addAttachment(pathToAttachment, file);
 
+            Status status =  statusRepository.FindByKey("FailedToSendEmail");
 
             emailSender.send(message);
             logger.info("Письмо отправлено");
 
+            status = statusRepository.FindByKey("LetterSent");
+            currentRequest.setStatus(status);
 
-            Message[] massMessage = new Message[1];
-            message.setFlag(Flags.Flag.SEEN,true);
-            massMessage[0] = message;
-            sendInbox.appendMessages(massMessage);
-            logger.info("Письмо сохранено");
-            currentRequest.setStatus(statusRepository.FindByKey("LetterSent"));
+            try {
+                Message[] massMessage = new Message[1];
+                message.setFlag(Flags.Flag.SEEN, true);
+                massMessage[0] = message;
+                sendInbox.appendMessages(massMessage);
+                logger.info("Письмо сохранено");
+                status = statusRepository.FindByKey("LetterSentAndSave");
+                currentRequest.setStatus(status);
+            } catch (Exception e ) {
+                status = statusRepository.FindByKey("LetterSentButNotSave");
+                currentRequest.setStatus(status);
+            }
+
             return true;
         } catch (Exception e ) {
 
@@ -188,10 +199,12 @@ public class WorkWithEmail {
                 logger.info("Письмо сохранено");
             }catch (Exception e2 ) {
                 logger.error("Не сохранил в папку отправленные, переменные тут уже мертвы.");
+
             }
             logger.error(e.getMessage());
             e.printStackTrace();
             logger.error("Письмо не отправлено");
+
             currentRequest.setStatus(statusRepository.FindByKey("FailedToSendEmail"));
             return false;
         }

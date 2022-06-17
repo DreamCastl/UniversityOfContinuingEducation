@@ -27,8 +27,39 @@
             </div>
         </div>
     </div>
+
+
+    <div class="container mt-5">
+        <h1>Фильтры</h1>
+        <form action="/IncomingRequest" method="post">
+            <table style="width: 100%; border-collapse: collapse; border-style: none;" border="0">
+                <tbody>
+                <table style="width: 100%; border-collapse: collapse; border-style: none; height: 60px;" border="0">
+                    <tbody>
+                    <tr style="height: 21px;">
+                        <td>
+                            <input class="form-control" name="StartDateOperation"  type="date" placeholder="С" />
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr style="height: 21px;">
+                        <td><input class="form-control" name="EndDateOperation" type="date" placeholder="по" /></td>
+                        <td ></td>
+                        <td ></td>
+                    </tr>
+                    </tbody>
+                </table>
+                </tbody>
+            </table>
+
+
+
+            <button type="submit" class="btn btn-success">Фильтр</button>
+        </form>
+    </div>
 </header>
 
 <header th:insert="blocks/Table :: Table"></header>
 </body>
 </html>
+
