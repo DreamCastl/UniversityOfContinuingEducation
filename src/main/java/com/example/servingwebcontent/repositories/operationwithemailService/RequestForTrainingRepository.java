@@ -15,8 +15,8 @@ import java.util.Objects;
 @Repository
 public interface RequestForTrainingRepository extends JpaRepository<RequestForTraining,String> {
 
-//    @Query(
-//            "FROM RequestForTraining where status.RequestForTraining < :status")
-//    Collection<RequestForTraining> findRequest(@Param("status") Status status);
+    @Query("FROM RequestForTraining")
+    Collection<RequestForTraining> findRequest();
+
 
 }

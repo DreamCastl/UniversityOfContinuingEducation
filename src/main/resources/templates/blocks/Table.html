@@ -4,7 +4,6 @@
             <thead th:insert="blocks/headerTable :: headerTable">
             </thead>
             <tbody>
-
             <div th:each="el,state: ${requests}">
                 <tr>
                     <td th:text="${state.index}">
@@ -23,7 +22,6 @@
                     <td th:text="${el.regionJob}">
                     <td th:text="${el.position}">
                     <td th:text="${el.dateRequest}">
-                    <td th:text="${el.employerApproved}">
                     <td th:text="${el.requestConfirmed}">
                     <td th:text="${el.foundationOfEducation}">
                     <td th:text="${el.employerApproved}">

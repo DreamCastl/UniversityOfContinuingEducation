@@ -59,7 +59,7 @@ public class ItemMapperImpl implements ItemMapper {
             contract.setPosition(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getPosition()).orElse("")));
             contract.setEmail(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getEmail()).orElse("")));
             contract.setTelephoneNumber(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getTelephoneNumber()).orElse("")));
-            contract.setAdditionalInformation(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getAdditionalInformation()).orElse("")));
+            contract.setAdditionalInformation(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getAdditionalInformation()).orElse("")));
             contract.setClientComment(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getComment()).orElse("")));
             contract.setClientAdditionalInformation(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getCommentUniversity()).orElse("")));
             contract.setClientAdditionalInformation(ParserData.ValueToString(Optional.ofNullable(requestForTraining.getClient().getCommentUniversity()).orElse("")));
