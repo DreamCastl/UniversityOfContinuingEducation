@@ -6,7 +6,10 @@
             <tbody>
             <div th:each="el,state: ${requests}">
                 <tr>
-                    <td th:text="${state.index}">
+                    <td th:text="${state.index}+1">
+                    <td>
+                    <div th:insert="blocks/modalEdit :: modalEdit"></div>
+                    </td>
                     <td th:text="${el.dateOperation}">
                     <td th:text="${el.status}">
                     <td th:text="${el.NameProgramTraining}">

@@ -11,6 +11,7 @@ import com.example.servingwebcontent.repositories.operationwithemailService.Laun
 import com.example.servingwebcontent.repositories.operationwithemailService.RequestForTrainingRepository;
 import com.example.servingwebcontent.repositories.operationwithemailService.StatusRepository;
 import com.example.servingwebcontent.service.operationwithemailService.NMFO.DriverNMFO;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.ServiceUPOR;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.SheetsAndJava;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.WorkWithEmail;
 import org.apache.commons.lang.time.DateUtils;
@@ -45,7 +46,8 @@ public class MailOperationService {
     protected ClientRepository clientRepository;
     @Autowired
     protected StatusRepository statusRepository;
-
+    @Autowired
+    private ServiceUPOR serviceUPOR;
     // используемые компоненты (не компонненты т.к. нужно пересоздать)
     private SheetsAndJava sheetsService;
     private DriverNMFO driverConnect;
@@ -55,6 +57,8 @@ public class MailOperationService {
 
     private static final Logger logger = LogManager.getLogger();
     boolean currentStatus = false;
+
+    
 
     @Autowired
     private RequestForTrainingService requestForTrainingService;
@@ -130,10 +134,14 @@ public class MailOperationService {
             driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
             //8. Отправляем письмо на почту.
             workWithEmail.sendMessage(currentRequest);
+         //   serviceUPOR.PostRequestInUPOR(currentRequest.ConvertToJsonUpor());
         }
         // 9. Записываем строку в google Sheet
         requestForTrainingRepository.save(currentRequest);
-        sheetsService.AppendRow("Заявки",currentRequest.ConvertToList() );
+        //sheetsService.AppendRow("Заявки",currentRequest.ConvertToList());
+        serviceUPOR.PostRequestInUPOR(currentRequest.ConvertToJsonUpor());
+
+
         workWithEmail.SetFlagSeen(message, true);
         logger.info("------------> END <------------");
     }

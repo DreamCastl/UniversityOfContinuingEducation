@@ -20,6 +20,7 @@ public class DriverNMFO {
     private static String loginPage;
     private static String spoPage;
     private static String voPage;
+    private static String nmdPage;
     private static String loginAdmin;
     private static String PassAdmin;
 
@@ -28,6 +29,8 @@ public class DriverNMFO {
         loginPage = propertiesNMFO.getLoginPage();
         spoPage = propertiesNMFO.getSpoPage();
         voPage = propertiesNMFO.getVoPage();
+        nmdPage = propertiesNMFO.getNmdPage();
+
         loginAdmin = propertiesNMFO.getLoginAdmin();
         PassAdmin = propertiesNMFO.getPassAdmin();
 
@@ -91,9 +94,24 @@ public class DriverNMFO {
         }
     }
 
+
     private void spoPageDesktopPreparation() {
         do {
             logger.info("Переход на NMOS");
+            driver.get(spoPage);
+        } while (checkingUrl(driver));
+        spoAndVoPage.desktopPreparation();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void nmdPageDesktopPreparation() {
+        do {
+            logger.info("Переход на NMD");
             driver.get(spoPage);
         } while (checkingUrl(driver));
         spoAndVoPage.desktopPreparation();
@@ -113,7 +131,11 @@ public class DriverNMFO {
         logger.info("------------>" + Number + "<------------");
         if (Number.contains("NMOV")) {
             voPageDesktopPreparation();
-        } else {
+        }
+        if (Number.contains("NMD")) {
+            nmdPageDesktopPreparation();
+        }
+        if (Number.contains("NMOS")) {
             spoPageDesktopPreparation();
         }
         spoAndVoPage.searchForApplication(Number); //TODO убрать статику, сделать метод приватным, в парсер добавить вытаскивание из письма

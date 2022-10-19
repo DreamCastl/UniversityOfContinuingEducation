@@ -3,6 +3,7 @@ package com.example.servingwebcontent.controllers.operationwithemailService;
 import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
 import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
 import com.example.servingwebcontent.repositories.operationwithemailService.StatusRepository;
+import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.ServiceUPOR;
 import com.example.servingwebcontent.service.workwithwebsite.IncomingRequestService;
 import javafx.util.converter.LocalDateStringConverter;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +29,9 @@ public class IncomingRequestController {
 
     @Autowired
     private IncomingRequestService incomingRequestService;
+
+    @Autowired
+    private ServiceUPOR serviceUPOR;
 
     @Autowired
     private StatusRepository statusRepository;

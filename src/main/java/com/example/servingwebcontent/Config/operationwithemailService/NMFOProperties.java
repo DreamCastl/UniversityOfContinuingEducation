@@ -11,6 +11,7 @@ public class NMFOProperties {
     private String loginPage;
     private String spoPage;
     private String voPage;
+    private String nmdPage;
     private String loginAdmin;
     private String PassAdmin;
 
@@ -26,6 +27,9 @@ public class NMFOProperties {
         return voPage;
     }
 
+    public String getNmdPage() {
+        return nmdPage;
+    }
     public String getLoginAdmin() {
         return loginAdmin;
     }

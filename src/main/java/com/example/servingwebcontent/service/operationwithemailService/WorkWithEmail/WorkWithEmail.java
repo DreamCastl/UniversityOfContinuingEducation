@@ -161,11 +161,14 @@ public class WorkWithEmail {
             helper.setFrom(emailSender.getUsername());
             helper.setTo(currentRequest.getClient().getEmail());
             helper.setSubject("Заявка на обучение "+currentRequest.getNumberRequest());
-            helper.setText(GetTextLetterFromHTML(getHTMLLetter(currentRequest.getPayer())),true);
+            String htmlLetter = GetTextLetterFromHTML(getHTMLLetter(currentRequest.getPayer()));
+            htmlLetter = htmlLetter.replace("$$login$$",currentRequest.getNumberRequest());
+            htmlLetter = htmlLetter.replace("$$key$$",currentRequest.getRequestKey());
+            helper.setText(htmlLetter,true);
 
-            String pathToAttachment = getPathContract(currentRequest.getPayer());
-            FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
-            helper.addAttachment(pathToAttachment, file);
+       //     String pathToAttachment = getPathContract(currentRequest.getPayer());
+       //     FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
+       //     helper.addAttachment(pathToAttachment, file);
 
             Status status =  statusRepository.FindByKey("FailedToSendEmail");
 
@@ -187,7 +190,6 @@ public class WorkWithEmail {
                 status = statusRepository.FindByKey("LetterSentButNotSave");
                 currentRequest.setStatus(status);
             }
-
             return true;
         } catch (Exception e ) {
 
@@ -199,7 +201,6 @@ public class WorkWithEmail {
                 logger.info("Письмо сохранено");
             }catch (Exception e2 ) {
                 logger.error("Не сохранил в папку отправленные, переменные тут уже мертвы.");
-
             }
             logger.error(e.getMessage());
             e.printStackTrace();

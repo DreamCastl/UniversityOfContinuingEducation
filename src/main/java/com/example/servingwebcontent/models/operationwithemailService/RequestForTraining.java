@@ -2,6 +2,8 @@ package com.example.servingwebcontent.models.operationwithemailService;
 
 
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithEmail.ParserData;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -9,9 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Entity
@@ -33,6 +33,9 @@ public class RequestForTraining {
     @Column(name="Name_Program_Training")
     private String NameProgramTraining;//+
 
+    @Column(name="Number_Program_Training")
+    private String NumberProgramTraining;//+
+
     @Column(name="start_Date")
     private LocalDate startDate;
     @Column(name="end_Date")
@@ -53,6 +56,9 @@ public class RequestForTraining {
     private LocalDate paymentDate;
     @Column(name="Payment_Received")
     private boolean  PaymentReceived;
+
+    @Column(name="Request_Key")
+    private String requestKey;
 
     private String Payer; // Плательщик строкой, но вариантов не много... Можем записать в таблицу статусов и добавить к ней связь.
     // Типо статус 100 - Юр. лицо, Статус 200 - Физ.
@@ -95,4 +101,65 @@ public class RequestForTraining {
         }
         return list;
     }
+
+    public String ConvertToJsonUpor() {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String json = objectMapper.writeValueAsString(GetMapforJSON());
+            return json;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "{}";
+        }
+    }
+
+    private Map<String,ArrayList<Map<String,String>>> GetMapforJSON(){
+
+
+
+        Map<String,String> mapObj = new HashMap();
+
+        mapObj.put("cycle",ParserData.ValueToString(this.NameProgramTraining));
+        mapObj.put("date_from",ParserData.ValueToString(this.startDate));
+        mapObj.put("date_to",ParserData.ValueToString(this.endDate));
+        mapObj.put("application_number",ParserData.ValueToString(this.numberRequest));
+        mapObj.put("cycle_id",ParserData.ValueToString(this.NumberProgramTraining));
+        mapObj.put("key",ParserData.ValueToString(this.requestKey));
+
+        if (!status.getStatusName().equals("Canceled") ) {
+            //   mapObj.put("status","");
+
+
+
+            mapObj.put("full_name",ParserData.ValueToString(this.client.getFullName()));
+            mapObj.put("snils",ParserData.ValueToString(this.client.getSnils()));
+            mapObj.put("date_of_birth",ParserData.ValueToString(this.client.getBithDay()));
+            mapObj.put("listener_region",ParserData.ValueToString(this.getClient().getRegion()));
+            mapObj.put("direction",ParserData.ValueToString(this.getClient().getPosition()));
+            mapObj.put("main_direction",ParserData.ValueToString(this.getClient().getSpecialization()));
+            mapObj.put("place_of_work",ParserData.ValueToString(this.getClient().getRegionJob()));
+            mapObj.put("job_title",ParserData.ValueToString(this.getClient().getJob()));
+            mapObj.put("application_date",ParserData.ValueToString(this.getDateRequest()));
+            mapObj.put("foundation_training",ParserData.ValueToString(this.getFoundationOfEducation()));
+            mapObj.put("employer_approved",ParserData.ValueToString(this.isRequestConfirmed()));
+            mapObj.put("email",ParserData.ValueToString(this.getClient().getEmail()));
+            mapObj.put("phones",ParserData.ValueToString(this.getClient().getTelephoneNumber()));
+            mapObj.put("payer",ParserData.ValueToString(this.getPayer()));
+
+            //   mapObj.put("payment_link",);
+            //     mapObj.put("amount_of_training",);
+        }
+        mapObj.put("comment",ParserData.ValueToString(this.getStatus().getTranscription()+ " " + this.comment));
+        Map<String,ArrayList<Map<String,String>>> rez = new HashMap<>();
+        ArrayList<Map<String,String>> requsts = new ArrayList<Map<String,String>>();
+        requsts.add(mapObj);
+
+        rez.put("items",requsts);
+
+
+        return  rez;
+
+    }
+
 }

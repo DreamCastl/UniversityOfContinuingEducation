@@ -115,4 +115,9 @@ public class ParserData {
         }
         return result;
     }
+
+    public String NumberProgrammTrainingFromContext(String content) {
+        String[] mass = content.substring(content.indexOf("«")-20,content.indexOf("«")-1).split(" ");
+        return mass[mass.length-1];
+    }
 }

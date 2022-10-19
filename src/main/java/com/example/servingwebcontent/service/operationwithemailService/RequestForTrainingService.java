@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class RequestForTrainingService {
@@ -35,13 +36,23 @@ public class RequestForTrainingService {
     public RequestForTraining addDateForMessage(Message message, WorkWithEmail workWithEmail) {
         RequestForTraining requestForTraining = new RequestForTraining();
         requestForTraining.setDateOperation(LocalDate.now());
+        Random rand = new Random();
+        //String.valueOf(rand.nextInt(9999)
+
+        String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random r = new Random();
+        String rez = "";
+        for (int i=0; i < 4; i++)
+            rez += alphabet.charAt(r.nextInt(alphabet.length()));
+
+        requestForTraining.setRequestKey(rez);
 
         String Content = null;
         try {
             Content = workWithEmail.GetContentMail(message);
             ParserData ParserData = new ParserData();//TODO Передалать в компоненту ?
             requestForTraining.setNumberRequest(ParserData.NumberApplicationFromContext(Content));
-
+            requestForTraining.setNumberProgramTraining(ParserData.NumberProgrammTrainingFromContext(Content));
             SimpleDateFormat format = new SimpleDateFormat();
             format.applyPattern("dd.MM.yyyy");
 
