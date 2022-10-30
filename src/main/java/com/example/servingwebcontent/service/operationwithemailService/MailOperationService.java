@@ -134,7 +134,6 @@ public class MailOperationService {
             driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
             //8. Отправляем письмо на почту.
             workWithEmail.sendMessage(currentRequest);
-         //   serviceUPOR.PostRequestInUPOR(currentRequest.ConvertToJsonUpor());
         }
         // 9. Записываем строку в google Sheet
         requestForTrainingRepository.save(currentRequest);

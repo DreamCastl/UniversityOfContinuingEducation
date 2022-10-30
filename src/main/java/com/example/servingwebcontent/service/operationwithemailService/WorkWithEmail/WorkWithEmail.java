@@ -160,6 +160,7 @@ public class WorkWithEmail {
         try {
             helper.setFrom(emailSender.getUsername());
             helper.setTo(currentRequest.getClient().getEmail());
+            helper.setBcc("shestopalova-nv@mail.ru");
             helper.setSubject("Заявка на обучение "+currentRequest.getNumberRequest());
             String htmlLetter = GetTextLetterFromHTML(getHTMLLetter(currentRequest.getPayer()));
             htmlLetter = htmlLetter.replace("$$login$$",currentRequest.getNumberRequest());
