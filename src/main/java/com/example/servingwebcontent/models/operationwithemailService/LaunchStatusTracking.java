@@ -20,7 +20,7 @@ public class LaunchStatusTracking {
 
     public LaunchStatusTracking(boolean mailOperationServiceRunning) {
         //Synchronized
-                MailOperationServiceRunning = mailOperationServiceRunning;
+        MailOperationServiceRunning = mailOperationServiceRunning;
     }
 
     public long getId() {

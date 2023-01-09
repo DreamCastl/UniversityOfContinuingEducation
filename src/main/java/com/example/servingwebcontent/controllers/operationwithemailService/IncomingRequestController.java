@@ -1,7 +1,9 @@
 package com.example.servingwebcontent.controllers.operationwithemailService;
 
 import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
+import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTrackingSMS;
 import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
+import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingSMSRepository;
 import com.example.servingwebcontent.repositories.operationwithemailService.StatusRepository;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.ServiceUPOR;
 import com.example.servingwebcontent.service.workwithwebsite.IncomingRequestService;
@@ -26,6 +28,9 @@ public class IncomingRequestController {
     private static final Logger logger = LogManager.getLogger();
     @Autowired
     private LaunchStatusTrackingRepository TrackingRepository;
+
+    @Autowired
+    private LaunchStatusTrackingSMSRepository TrackingRepositorySMS;
 
     @Autowired
     private IncomingRequestService incomingRequestService;
@@ -159,5 +164,22 @@ public class IncomingRequestController {
         return "redirect:/IncomingRequest";
     }
 
+
+    @PostMapping("/IncomingRequest/startSMS")
+    @PreAuthorize("hasAuthority('write')")
+    public String IncomingRequestPageStartSMS(Model model) {
+
+        TrackingRepositorySMS.save(new LaunchStatusTrackingSMS(true));
+        logger.info("SMS start");
+        return "redirect:/IncomingRequest";
+    }
+
+    @PostMapping("/IncomingRequest/stopSMS")
+    @PreAuthorize("hasAuthority('write')")
+    public String IncomingRequestPageStopSMS(Model model) {
+        TrackingRepositorySMS.save(new LaunchStatusTrackingSMS(false));
+        logger.info("SMS stop");
+        return "redirect:/IncomingRequest";
+    }
 
 }

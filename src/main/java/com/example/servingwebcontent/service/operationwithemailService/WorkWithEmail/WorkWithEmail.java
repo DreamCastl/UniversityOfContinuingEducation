@@ -78,7 +78,7 @@ public class WorkWithEmail {
         }
 
         try {
-            logger.info("Попытка получения почты");
+        //    logger.info("Попытка получения почты");
 
             messages = readInbox.search(new SearchTerm() {
                 @Override
@@ -87,7 +87,7 @@ public class WorkWithEmail {
                         return !msg.isSet(Flags.Flag.SEEN) && ((msg.getSubject().equals("Создание заявки на цикл")));
                     } catch (MessagingException e) {
                         e.printStackTrace();
-                        logger.warn("фильтр не сработал");
+                        //logger.warn("фильтр не сработал");
                         return false;
                     }
                 }
@@ -95,8 +95,8 @@ public class WorkWithEmail {
             return messages;
         } catch (MessagingException e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
-            logger.warn("Получение писем не удалось");
+            //logger.error(e.getMessage());
+            //logger.warn("Получение писем не удалось");
         }
         return messages;
     }

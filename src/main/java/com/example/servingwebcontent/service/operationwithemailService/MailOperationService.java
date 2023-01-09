@@ -6,10 +6,7 @@ import com.example.servingwebcontent.Config.operationwithemailService.NMFOProper
 import com.example.servingwebcontent.Config.operationwithemailService.SetSpreadSheetTable;
 import com.example.servingwebcontent.models.operationwithemailService.LaunchStatusTracking;
 import com.example.servingwebcontent.models.operationwithemailService.RequestForTraining;
-import com.example.servingwebcontent.repositories.operationwithemailService.ClientRepository;
-import com.example.servingwebcontent.repositories.operationwithemailService.LaunchStatusTrackingRepository;
-import com.example.servingwebcontent.repositories.operationwithemailService.RequestForTrainingRepository;
-import com.example.servingwebcontent.repositories.operationwithemailService.StatusRepository;
+import com.example.servingwebcontent.repositories.operationwithemailService.*;
 import com.example.servingwebcontent.service.operationwithemailService.NMFO.DriverNMFO;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.ServiceUPOR;
 import com.example.servingwebcontent.service.operationwithemailService.WorkWithDataBase.SheetsAndJava;
@@ -23,6 +20,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 
@@ -40,6 +41,8 @@ public class MailOperationService {
     private NMFOProperties nmfoProperties;
     @Autowired
     protected LaunchStatusTrackingRepository TrackingRepository;
+    @Autowired
+    protected LaunchStatusTrackingSMSRepository TrackingSMSRepository;
     @Autowired
     protected RequestForTrainingRepository requestForTrainingRepository;
     @Autowired
@@ -74,17 +77,13 @@ public class MailOperationService {
                 try {
                     Initialization();
                     Operation();
-                    logger.info("Сделалъ");
+               //     logger.info("Сделалъ");
                 } catch (Exception e) {
                     logger.error(e.getMessage());
                     logger.info("Второй поток прерван");
                 }
-                try {
-                    logger.info("Ожидание");
-                    Thread.sleep(300000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+          //      logger.info("Ожидание");
+                //Thread.sleep(0);
             }
         }
     }
@@ -134,6 +133,22 @@ public class MailOperationService {
             driverConnect.getSpoAndVoPage().closeWindowsAndReturnCyclePc(); // возврат на страницу гугла
             //8. Отправляем письмо на почту.
             workWithEmail.sendMessage(currentRequest);
+
+            if (TrackingSMSRepository.statusLanch()) {
+                Runtime runtime = Runtime.getRuntime();
+
+                try {
+                    Process p1 = runtime.exec("cmd /c start C:\\platform-tools\\send_sms.bat " +
+                            currentRequest.getClient().getTelephoneNumber() + " " +
+                            currentRequest.getNumberRequest() + " " +
+                            currentRequest.getRequestKey());
+
+                    //p1.destroy();
+                    logger.info("Смс отправленно - см телефон.");
+                } catch (IOException ioException) {
+                    System.out.println(ioException.getMessage());
+                }
+            }
         }
         // 9. Записываем строку в google Sheet
         requestForTrainingRepository.save(currentRequest);

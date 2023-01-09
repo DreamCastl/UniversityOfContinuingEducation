@@ -80,17 +80,17 @@ public class RequestForTrainingService {
         }
 
         try {
-            requestForTraining.setDateRequest(ParserData.getDate(dataNMFO.get(9)));
+            requestForTraining.setDateRequest(ParserData.getDate(dataNMFO.get(10)));
             requestForTraining.setRequestConfirmed(false);
-            requestForTraining.setFoundationOfEducation(dataNMFO.get(11));
-            requestForTraining.setEmployerApproved(ParserData.EmployerApproved(dataNMFO.get(12)));
-            requestForTraining.setEmployerApproved(ParserData.NotOrYes(dataNMFO.get(13)));
-            requestForTraining.setPaymentReceived(ParserData.NotOrYes(dataNMFO.get(15)));
+            requestForTraining.setFoundationOfEducation(dataNMFO.get(12));
+            requestForTraining.setEmployerApproved(ParserData.EmployerApproved(dataNMFO.get(13)));
+            //requestForTraining.setEmployerApproved(ParserData.NotOrYes(dataNMFO.get(13)));
+            requestForTraining.setPaymentReceived(ParserData.NotOrYes(dataNMFO.get(16)));
 
-            requestForTraining.setPaymentDate(ParserData.getDate(dataNMFO.get(14)));
-            requestForTraining.setPayer(ParserData.getPlayer(dataNMFO.get(18)));
-            requestForTraining.setAdditionalInformation(dataNMFO.get(19));
-            requestForTraining.setComment(dataNMFO.get(20));
+            requestForTraining.setPaymentDate(ParserData.getDate(dataNMFO.get(15)));//
+            requestForTraining.setPayer(ParserData.getPlayer(dataNMFO.get(19)));
+            requestForTraining.setAdditionalInformation(dataNMFO.get(20));
+            requestForTraining.setComment(dataNMFO.get(21));
 
             Client client = FindOrCreateClient(dataNMFO);;
             requestForTraining.setClient(client);
@@ -105,17 +105,17 @@ public class RequestForTrainingService {
 
 
         try {
-            Client client = clientRepository.findClientbySNILS( dataNMFO.get(2));;
-            client.setEmail(dataNMFO.get(16));
-            client.setTelephoneNumber(dataNMFO.get(17));
+            Client client = clientRepository.findClientbySNILS( dataNMFO.get(3));;
+            client.setEmail(dataNMFO.get(17));
+            client.setTelephoneNumber(dataNMFO.get(18));
             client.setFullName(dataNMFO.get(1));
 //        client.setSNILS,dataNMFO.get(2));
-            client.setBithDay(ParserData.getDate(dataNMFO.get(3)));
+            client.setBithDay(ParserData.getDate(dataNMFO.get(2)));
             client.setRegion(dataNMFO.get(4));
             client.setSpecialization(dataNMFO.get(5));
-            client.setRegionJob( dataNMFO.get(7));
-            client.setPosition(dataNMFO.get(8));
-            client.setJob(dataNMFO.get(6));
+            client.setRegionJob( dataNMFO.get(8));
+            client.setPosition(dataNMFO.get(9));
+            client.setJob(dataNMFO.get(7));
             return client;
         } catch (Exception e) {
             e.printStackTrace();
